@@ -38,12 +38,6 @@ async def on_message(message):
     if message.content == '!보스':
         await print_boss_list(message)
         
-async def print_boss_list(message):
-    boss_list_str = "보스 리스트:\n"
-    for boss in boss_list.values():
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']})\n"
-    await message.channel.send(boss_list_str)
-        
     for boss_name in boss_list.keys():
         if message.content == f"{boss_name} 컷":
             await boss_kill(message, boss_name)
@@ -53,8 +47,13 @@ async def boss_kill(message, boss_name):
     regen_time_str = regen_time.strftime("%H:%M:%S")
     await message.channel.send(f"{boss_name}가 킬당했습니다. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
+async def print_boss_list(message):
+    boss_list_str = "보스 리스트:\n"
+    for boss in boss_list.values():
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']})\n"
+    await message.channel.send(boss_list_str)
 
-    
+
 try:
     client.run(TOKEN)
 except discord.errors.LoginFailure as e:
