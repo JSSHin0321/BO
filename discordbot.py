@@ -4,13 +4,14 @@ import discord
 from dotenv import load_dotenv
 import os
 import datetime
+import pytz
+
 load_dotenv()
 
 PREFIX = os.environ['PREFIX']
 TOKEN = os.environ['TOKEN']
 
 client = discord.Client()
-
 
 boss_list = {
     '제니나': {
@@ -43,7 +44,8 @@ async def on_message(message):
             await boss_kill(message, boss_name)
 
 async def boss_kill(message, boss_name):
-    regen_time = datetime.datetime.now() + datetime.timedelta(hours=3)
+    tz = pytz.timezone('Asia/Seoul')
+    regen_time = datetime.datetime.now(tz) + datetime.timedelta(hours=3)
     regen_time_str = regen_time.strftime("%H:%M:%S")
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
