@@ -18,15 +18,18 @@ boss_list = {
         'name': '제니나',
         'level': 47,
         'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbS6EiX%2FbtsaibxQI5N%2FeL7dfmI4SnKL5hI6rDXurK%2Fimg.png',
-        'regen_time': '3시간'
+        'regen_time': '3시간',
+        'last_kill_time': None
     },
     '수호자': {
         'name': '수호자',
         'level': 47,
         'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbmjUmZ%2FbtsakfT1ktr%2FhSqjg4Pz9hKOkg3dYUJ540%2Fimg.png',
-        'regen_time': '3시간'
+        'regen_time': '3시간',
+        'last_kill_time': None
     }
 }
+
 
 @client.event
 async def on_message(message):
@@ -47,16 +50,21 @@ async def boss_kill(message, boss_name):
     tz = pytz.timezone('Asia/Seoul')
     regen_time = datetime.datetime.now(tz) + datetime.timedelta(hours=3)
     regen_time_str = regen_time.strftime("%H:%M:%S")
+    
+    boss_list[boss_name]['last_kill_time'] = regen_time
+    
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
+
 
 async def print_boss_list(message):
     boss_list_str = "보스 리스트:\n"
-    now = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
     for boss in boss_list.values():
-        regen_time = now + datetime.timedelta(hours=3)
-        regen_time_str = regen_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {regen_time_str}\n"
+        last_kill_time_str = "최근 컷 기록 없음"
+        if boss['last_kill_time']:
+            last_kill_time_str = boss['last_kill_time'].strftime("%H:%M:%S")
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {last_kill_time_str}\n"
     await message.channel.send(boss_list_str)
+
 
 
 
