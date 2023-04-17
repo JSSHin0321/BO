@@ -1,6 +1,8 @@
 github 를 이용해서 24시간 구동하는 디스코드 봇을 만들고 있어. 
+밑에는 내가 현재 설치한 패키지와 기본 코드들이야. 
+지금부터 추가할 코드들의 바탕이 될거야. 기억해.
 
-아래는 내가 추가한 패키지들이야.
+
 
 [패키지]
 aiohttp==3.7.4.post0
@@ -18,4 +20,40 @@ PyNaCl==1.4.0
 
 [중요]
 1. 모든 명령어는 PREFIX를 사용하지 않을거야.
+2. 봇 TOKEN의 경우 외부에 이미 등록되어 있어.
+
+
+[기본]
+from cmath import log
+from distutils.sysconfig import PREFIX
+import discord
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+PREFIX = os.environ['PREFIX']
+TOKEN = os.environ['TOKEN']
+
+client = discord.Client()
+
+@client.event
+async def on_ready():
+    print(f'Logged in as {client.user}.')
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content == f'{PREFIX}call':
+        await message.channel.send("callback!")
+
+    if message.content.startswith(f'{PREFIX}hello'):
+        await message.channel.send('Hello!')
+
+
+try:
+    client.run(TOKEN)
+except discord.errors.LoginFailure as e:
+    print("Improper token has been passed.")
 
