@@ -42,9 +42,10 @@ async def on_message(message):
     for boss_name in boss_list.keys():
         if message.content == f"{boss_name} 컷":
             await boss_kill(message, boss_name)
-        elif message.content.startswith(f"{boss_name} "):
+        elif message.content.startswith(f"{boss_name} ") and message.content != f"{boss_name} 컷":
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
+
 
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
