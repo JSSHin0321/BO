@@ -35,6 +35,12 @@ async def speak(ctx, *, text: str):
 
         os.remove(fp.name)
 
+
+@bot.command(name='안녕')
+async def hello(ctx):
+    await ctx.send('안녕하세요!')
+
+        
 @bot.command(name='join')
 async def join(ctx, channel_id: int):
     channel = bot.get_channel(channel_id)
