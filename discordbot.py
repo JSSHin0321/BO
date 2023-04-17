@@ -35,15 +35,17 @@ async def speak(ctx, *, text: str):
 
         os.remove(fp.name)
 
-# Join voice channel command
 @bot.command(name='join')
-async def join(ctx):
-    print("Joining voice channel...")
-    channel = ctx.author.voice.channel
+async def join(ctx, channel_id: int):
+    channel = bot.get_channel(channel_id)
+    if channel is None or not isinstance(channel, discord.VoiceChannel):
+        return await ctx.send("Invalid voice channel ID.")
+    
     if ctx.voice_client is not None:
-        return await ctx.voice_client.move_to(channel)
+        await ctx.voice_client.move_to(channel)
+    else:
+        await channel.connect()
 
-    await channel.connect()
 
 
 # Leave voice channel command
