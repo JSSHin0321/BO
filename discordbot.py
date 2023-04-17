@@ -35,9 +35,6 @@ boss_list = {
 async def on_message(message):
     if message.author == client.user:
         return
-       
-    if message.content == '안녕':
-        await hello(message)
         
     if message.content == '보스':
         await print_boss_list(message)
@@ -59,7 +56,7 @@ async def boss_kill(message, boss_name):
 async def print_boss_list(message):
     boss_list_str = "보스 리스트:\n"
     for boss in boss_list.values():
-        last_kill_time_str = "최근 컷 기록 없음"
+        last_kill_time_str = " "
         if boss['last_kill_time']:
             last_kill_time_str = boss['last_kill_time'].strftime("%H:%M:%S")
         boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {last_kill_time_str}\n"
