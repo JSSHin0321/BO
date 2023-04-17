@@ -46,8 +46,6 @@ async def join(ctx):
     await channel.connect()
 
 
-    await channel.connect()
-
 # Leave voice channel command
 @bot.command(name='leave')
 async def leave(ctx):
