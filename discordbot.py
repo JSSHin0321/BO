@@ -38,9 +38,13 @@ async def speak(ctx, *, text: str):
 # Join voice channel command
 @bot.command(name='join')
 async def join(ctx):
+    print("Joining voice channel...")
     channel = ctx.author.voice.channel
     if ctx.voice_client is not None:
         return await ctx.voice_client.move_to(channel)
+
+    await channel.connect()
+
 
     await channel.connect()
 
