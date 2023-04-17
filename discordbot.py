@@ -76,8 +76,10 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
 
 async def print_boss_list(message):
+    # sort boss list by next spawn time
+    sorted_boss_list = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] + datetime.timedelta(hours=3))
+    
     boss_list_str = "보스 리스트:\n"
-    sorted_boss_list = sorted(boss_list.values(), key=lambda x: x.get('last_kill_time', datetime.datetime.min))
     for boss in sorted_boss_list:
         next_spawn_time_str = " "
         if boss['last_kill_time']:
