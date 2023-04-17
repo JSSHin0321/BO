@@ -35,7 +35,7 @@ async def on_message(message):
     if message.content == '안녕':
         await hello(message)
         
-    if message.content == '!보스':
+    if message.content == '보스':
         await print_boss_list(message)
         
     for boss_name in boss_list.keys():
@@ -45,7 +45,7 @@ async def on_message(message):
 async def boss_kill(message, boss_name):
     regen_time = datetime.datetime.now() + datetime.timedelta(hours=3)
     regen_time_str = regen_time.strftime("%H:%M:%S")
-    await message.channel.send(f"{boss_name}가 킬당했습니다. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
+    await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
 async def print_boss_list(message):
     boss_list_str = "보스 리스트:\n"
