@@ -51,9 +51,13 @@ async def boss_kill(message, boss_name):
 
 async def print_boss_list(message):
     boss_list_str = "보스 리스트:\n"
+    now = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
     for boss in boss_list.values():
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']})\n"
+        regen_time = now + datetime.timedelta(hours=3)
+        regen_time_str = regen_time.strftime("%H:%M:%S")
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {regen_time_str}\n"
     await message.channel.send(boss_list_str)
+
 
 
 try:
