@@ -1,4 +1,3 @@
-from cmath import log
 from distutils.sysconfig import PREFIX
 import discord
 from dotenv import load_dotenv
@@ -88,6 +87,7 @@ async def print_boss_list(message):
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
 
+
 async def sort_bosses_by_spawn_time():
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
@@ -112,6 +112,7 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
+
 
 
 
