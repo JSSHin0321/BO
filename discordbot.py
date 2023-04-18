@@ -69,7 +69,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
             kill_time += datetime.timedelta(days=1)
 
     regen_time = kill_time + datetime.timedelta(hours=3)
-    regen_time_str = regen_time.strftime("%H:%M:%S")
+    regen_time_str = regen_time.strftime("%H:%M:%S") # 이 부분 추가
 
     boss_list[boss_name]['last_kill_time'] = kill_time
 
@@ -77,6 +77,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
     # Update boss list
     await print_boss_list(message)
+
 
 async def print_boss_list(message, recently_killed_boss=None):
     sorted_boss_list = await sort_bosses_by_spawn_time()
