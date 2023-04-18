@@ -110,20 +110,21 @@ async def sort_bosses_by_spawn_time():
         elif boss_name.endswith('컷'):
             # If the boss was registered with '컷' command and hasn't been killed yet, set the next spawn time as now
             regen_time = now
+            bosses_with_spawn_time.append((boss_name, regen_time))
         elif boss_name.endswith('시간'):
             # If the boss was registered with '시간' command and hasn't been killed yet, set the next spawn time as the input time
             input_time_str = boss_info['regen_time']
-            try:
-                input_time = datetime.datetime.strptime(input_time_str, '%H시 %M분')
-            except ValueError:
-                # If the input time is not valid, assign a very large estimated time
-                regen_time = now + datetime.timedelta(days=365)
-            else:
-                regen_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
-                if now >= regen_time:
-                    regen_time += datetime.timedelta(days=1)
-
-        bosses_with_spawn_time.append((boss_name, regen_time))
+            if input_time_str is not None:
+                try:
+                    input_time = datetime.datetime.strptime(input_time_str, '%H시 %M분')
+                except ValueError:
+                    # If the input time is not valid, assign a very large estimated time
+                    regen_time = now + datetime.timedelta(days=365)
+                else:
+                    regen_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
+                    if now >= regen_time:
+                        regen_time += datetime.timedelta(days=1)
+                bosses_with_spawn_time.append((boss_name, regen_time))
 
     # Sort the list of tuples based on the estimated time of appearance
     bosses_with_spawn_time.sort(key=lambda x: (x[1], x[0].endswith('컷'), x[0].endswith('시간')))
@@ -134,6 +135,7 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
+
 
 
 
