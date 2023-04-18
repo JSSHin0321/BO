@@ -19,14 +19,14 @@ boss_list = {
         'level': 47,
         'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbS6EiX%2FbtsaibxQI5N%2FeL7dfmI4SnKL5hI6rDXurK%2Fimg.png',
         'regen_time': '3시간',
-        'last_kill_time': None
+        'last_kill_time': kill_time
     },
     '수호자': {
         'name': '수호자',
         'level': 47,
         'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbmjUmZ%2FbtsakfT1ktr%2FhSqjg4Pz9hKOkg3dYUJ540%2Fimg.png',
         'regen_time': '3시간',
-        'last_kill_time': None
+        'last_kill_time': kill_time
     }
 }
 
