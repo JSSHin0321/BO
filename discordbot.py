@@ -46,6 +46,7 @@ async def on_message(message):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
 
+
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
@@ -85,6 +86,7 @@ async def print_boss_list(message):
         boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
+
 
 
 
