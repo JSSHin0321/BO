@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import datetime
 import pytz
+import asyncio
 
 load_dotenv()
 
@@ -71,8 +72,12 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
+    # Add a short delay to allow the event loop to finish processing the current message
+    await asyncio.sleep(1)
+
     # Update boss list
     await print_boss_list(message)
+
 
 
 async def print_boss_list(message):
