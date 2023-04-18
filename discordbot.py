@@ -100,7 +100,7 @@ async def sort_bosses_by_spawn_time():
         else:
             regen_time = datetime.datetime(now.year, now.month, now.day, 0, 0, tzinfo=tz) + datetime.timedelta(hours=3)
 
-        if now >= regen_time:
+        while now >= regen_time:
             regen_time += datetime.timedelta(days=1)
 
         bosses_with_spawn_time.append((boss_name, regen_time))
@@ -112,6 +112,7 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
+
 
 
 
