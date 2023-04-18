@@ -1,5 +1,3 @@
-from cmath import log
-from distutils.sysconfig import PREFIX
 import discord
 from dotenv import load_dotenv
 import os
@@ -45,6 +43,10 @@ async def on_message(message):
         elif message.content.startswith(f"{boss_name} "):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
+
+        if message.content == f"{boss_name} 초기화":
+            boss_list[boss_name]['last_kill_time'] = None
+            await message.channel.send(f"{boss_name} kill 기록이 초기화되었습니다.")
 
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
