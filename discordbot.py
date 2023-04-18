@@ -59,31 +59,22 @@ async def boss_kill(message, boss_name, input_time_str=None):
             await message.channel.send(f"{boss_name} : 입력한 시간이 유효하지 않습니다.")
             return
 
-        input_time_with_tz = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
+        last_kill_time = boss_list[boss_name]['last_kill_time']
 
-        if boss_list[boss_name]['last_kill_time'] is not None:
-            time_difference_with_input_time = abs(input_time_with_tz - boss_list[boss_name]['last_kill_time'])
-            time_difference_with_previous_kill_time = abs(now - boss_list[boss_name]['last_kill_time'])
-            if time_difference_with_input_time < time_difference_with_previous_kill_time:
-                kill_time = input_time_with_tz
-            else:
-                kill_time = boss_list[boss_name]['last_kill_time'] + datetime.timedelta(hours=3)
+        if last_kill_time is not None and input_time < last_kill_time.time():
+            kill_time = datetime.datetime.combine(now.date(), input_time) + datetime.timedelta(days=1)
         else:
-            kill_time = input_time_with_tz
+            kill_time = datetime.datetime.combine(now.date(), input_time)
 
-        if now >= kill_time:
-            kill_time += datetime.timedelta(days=1)
+        regen_time = kill_time + datetime.timedelta(hours=3)
+        regen_time_str = regen_time.strftime("%H:%M:%S")
 
-    regen_time = kill_time + datetime.timedelta(hours=3)
-    regen_time_str = regen_time.strftime("%H:%M:%S")
+        boss_list[boss_name]['last_kill_time'] = kill_time
 
-    boss_list[boss_name]['last_kill_time'] = kill_time
+        await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
-    await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
-
-    # Update boss list
-    await print_boss_list(message)
-
+        # Update boss list
+        await print_boss_list(message)
 
 
 async def print_boss_list(message):
@@ -99,6 +90,7 @@ async def print_boss_list(message):
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
 
+
 async def sort_bosses_by_spawn_time():
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
@@ -106,10 +98,13 @@ async def sort_bosses_by_spawn_time():
     # Create a list of tuples that contains the boss name and the expected time of appearance
     bosses_with_spawn_time = []
     for boss_name, boss_info in boss_list.items():
-        if boss_info['last_kill_time']:
-            regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
+        last_kill_time = boss_info['last_kill_time']
+        if last_kill_time:
+            if now < last_kill_time + datetime.timedelta(hours=3):
+                regen_time = last_kill_time + datetime.timedelta(hours=3)
+            else:
+                regen_time = now + datetime.timedelta(days=365)
         else:
-            # Assign a very large estimated time to bosses without a last kill time
             regen_time = now + datetime.timedelta(days=365)
 
         bosses_with_spawn_time.append((boss_name, regen_time))
@@ -123,6 +118,7 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
+
 
 
 
