@@ -93,21 +93,20 @@ async def sort_bosses_by_spawn_time():
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
 
-    # Create a list of tuples that contains the boss name and the expected time of appearance
     bosses_with_spawn_time = []
     for boss_name, boss_info in boss_list.items():
         if boss_info['last_kill_time']:
             regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
         else:
-            # Assign a very large estimated time to bosses without a last kill time
-            regen_time = now + datetime.timedelta(days=365)
+            regen_time = datetime.datetime(now.year, now.month, now.day, 0, 0, tzinfo=tz) + datetime.timedelta(hours=3)
+
+        if now >= regen_time:
+            regen_time += datetime.timedelta(days=1)
 
         bosses_with_spawn_time.append((boss_name, regen_time))
 
-    # Sort the list of tuples based on the estimated time of appearance
     bosses_with_spawn_time.sort(key=lambda x: x[1])
 
-    # Create a new dictionary that contains the sorted bosses
     sorted_boss_list = {}
     for boss_name, _ in bosses_with_spawn_time:
         sorted_boss_list[boss_name] = boss_list[boss_name]
