@@ -33,7 +33,7 @@ boss_list = {
 
 
 async def print_boss_list(message):
-    boss_list_sorted = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] + datetime.timedelta(hours=3) if x['last_kill_time'] else datetime.datetime.max)
+    boss_list_sorted = sorted(boss_list.values(), key=lambda x: (x['last_kill_time'] or datetime.datetime.min, x['name']))
     boss_list_str = "```보스 리스트:\n"
     for boss in boss_list_sorted:
         next_spawn_time_str = " "
