@@ -47,11 +47,8 @@ async def on_message(message):
             await boss_kill(message, boss_name, input_time_str)
 
 async def boss_kill(message, boss_name, input_time_str=None):
-    tz = pytz.timezone('Asia/Seoul')
-    now = datetime.datetime.now(tz)
-
     if input_time_str is None:
-        kill_time = now
+        kill_time_str = "현재"
     else:
         try:
             input_time = datetime.datetime.strptime(input_time_str, '%H%M')
@@ -59,20 +56,17 @@ async def boss_kill(message, boss_name, input_time_str=None):
             await message.channel.send(f"{boss_name} : 입력한 시간이 유효하지 않습니다.")
             return
 
-        kill_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
-
-        if now >= kill_time:
-            kill_time += datetime.timedelta(days=1)
-
-    regen_time = kill_time + datetime.timedelta(hours=3)
-    regen_time_str = regen_time.strftime("%H:%M:%S")
+        tz = pytz.timezone('Asia/Seoul')
+        kill_time = datetime.datetime.now(tz).replace(hour=input_time.hour, minute=input_time.minute, second=0, microsecond=0)
+        kill_time_str = kill_time.strftime("%H:%M:%S")
 
     boss_list[boss_name]['last_kill_time'] = kill_time
 
-    await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
+    await message.channel.send(f"{boss_name} 처치 되었습니다.")
 
     # Update boss list
     await print_boss_list(message)
+
 
 
 async def print_boss_list(message):
