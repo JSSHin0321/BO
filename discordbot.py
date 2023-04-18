@@ -50,7 +50,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
 
-    if input_time_str is None:
+    if input_time is None:
         kill_time = now
     else:
         try:
@@ -61,8 +61,9 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
         kill_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
 
-        if now >= kill_time:
+        while now >= kill_time:
             kill_time += datetime.timedelta(days=1)
+
 
     regen_time = kill_time + datetime.timedelta(hours=3)
     regen_time_str = regen_time.strftime("%H:%M:%S")
@@ -99,9 +100,6 @@ async def sort_bosses_by_spawn_time():
             regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
         else:
             regen_time = datetime.datetime(now.year, now.month, now.day, 0, 0, tzinfo=tz) + datetime.timedelta(hours=3)
-
-        while now >= regen_time:
-            regen_time += datetime.timedelta(days=1)
 
         bosses_with_spawn_time.append((boss_name, regen_time))
 
