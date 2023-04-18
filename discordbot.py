@@ -1,5 +1,3 @@
-from cmath import log
-from distutils.sysconfig import PREFIX
 import discord
 from dotenv import load_dotenv
 import os
@@ -77,6 +75,8 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
            
 async def print_boss_list(message):
+    channel = message.channel
+    
     # Create a list of bosses with calculated next spawn times
     boss_spawn_times = []
     for boss in boss_list.values():
@@ -95,9 +95,6 @@ async def print_boss_list(message):
         next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S") if next_spawn_time else " "
         boss_list_str += f"{boss_name} (Lv. {boss_level}) => {next_spawn_time_str}\n"
 
-    await message.channel.send(boss_list_str)
-
-
     # Find the existing boss list message and delete it
     async for message in channel.history(limit=10):
         if message.author == client.user and message.content.startswith("보스 리스트:"):
@@ -107,9 +104,8 @@ async def print_boss_list(message):
     # Send the updated boss list
     await channel.send(boss_list_str)
 
-    
-    
 try:
     client.run(TOKEN)
 except discord.errors.LoginFailure as e:
     print("Improper token has been passed.")
+
