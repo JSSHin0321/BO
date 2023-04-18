@@ -85,7 +85,7 @@ async def print_boss_list(message):
 
     # 예상 출현 시간이 빠른 순서대로 보스 목록을 정렬합니다.
     boss_timers_sorted = sorted(boss_timers.items(), key=lambda x: x[1]['time'] if x[1] else datetime.datetime.max)
-    boss_list_sorted = [x[0] for x in boss_timers_sorted] + [x for x in boss_list if x not in boss_timers]
+    boss_list_sorted = [x[0] for x in boss_timers_sorted] + [x for x in boss_list.keys() if x not in boss_timers]
 
     boss_list_str = "```보스 리스트:\n"
     for boss in boss_list_sorted:
