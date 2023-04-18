@@ -45,7 +45,7 @@ async def on_message(message):
         elif message.content.startswith(f"{boss_name} "):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
-
+            
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
