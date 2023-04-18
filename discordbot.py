@@ -80,19 +80,19 @@ COMMANDS = {
     '초기화': reset_command
 }
 
-
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
     content = message.content.split()
-    if not content:
+    if len(content) < 2:
         return
 
-    command = content[0]
+    boss_name, command = content[:2]
     if command in COMMANDS:
-        await COMMANDS[command](message, *content[1:])
+        await COMMANDS[command](message, boss_name, *content[2:])
+
         
         
         
