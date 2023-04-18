@@ -78,7 +78,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
 async def print_boss_list(message):
     sorted_boss_list = await sort_bosses_by_spawn_time()
 
-    boss_list_str = "```Sorted Boss List:\n"
+    boss_list_str = "```Boss List:\n"
     for boss in sorted_boss_list.values():
         next_spawn_time_str = " "
         if boss['last_kill_time']:
@@ -94,13 +94,13 @@ async def sort_bosses_by_spawn_time():
 
     # Create a list of tuples that contains the boss name and the expected time of appearance
     bosses_with_spawn_time = []
-    bosses_without_spawn_time = []
     for boss_name, boss_info in boss_list.items():
         if boss_info['last_kill_time']:
             regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
-            bosses_with_spawn_time.append((boss_name, regen_time))
         else:
-            bosses_without_spawn_time.append(boss_name)
+            regen_time = now
+
+        bosses_with_spawn_time.append((boss_name, regen_time))
 
     # Sort the list of tuples based on the expected time of appearance
     bosses_with_spawn_time.sort(key=lambda x: x[1])
@@ -108,9 +108,6 @@ async def sort_bosses_by_spawn_time():
     # Create a new dictionary that contains the sorted bosses
     sorted_boss_list = {}
     for boss_name, _ in bosses_with_spawn_time:
-        sorted_boss_list[boss_name] = boss_list[boss_name]
-
-    for boss_name in bosses_without_spawn_time:
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
