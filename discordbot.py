@@ -92,23 +92,59 @@ async def sort_bosses_by_spawn_time():
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
 
-    # Create a list of tuples that contains the boss name, the expected time of appearance,
-    # and the latest kill time
-    bosses_with_spawn_time = []
+    # Create dictionaries to hold bosses registered with 'cut' and 'time' commands
+    cut_bosses = {}
+    time_bosses = {}
+
+    # Iterate through all bosses and add them to the appropriate dictionary
     for boss_name, boss_info in boss_list.items():
         if boss_info['last_kill_time']:
             regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
         else:
             regen_time = now
 
-        bosses_with_spawn_time.append((boss_name, regen_time, boss_info['last_kill_time']))
+        if boss_info['name'] in cut_bosses:
+            # Boss has been registered with 'cut' command, use that time instead
+            regen_time = cut_bosses[boss_info['name']]
 
-    # Sort the list of tuples based on the latest kill time and the expected time of appearance
-    bosses_with_spawn_time.sort(key=lambda x: (x[2] or datetime.datetime.min, x[1]))
+        if boss_info['name'] in time_bosses:
+            # Boss has been registered with 'time' command, use that time instead
+            regen_time = time_bosses[boss_info['name']]
+
+        # Add boss to the appropriate dictionary
+        if boss_info['last_kill_time']:
+            cut_bosses[boss_info['name']] = regen_time
+        else:
+            time_bosses[boss_info['name']] = regen_time
+
+    # Merge cut_bosses and time_bosses dictionaries with boss_list to get complete list of bosses
+    for boss_name, regen_time in cut_bosses.items():
+        boss_list[boss_name]['last_kill_time'] = regen_time
+
+    for boss_name, regen_time in time_bosses.items():
+        if boss_name not in boss_list:
+            boss_list[boss_name] = {
+                'name': boss_name,
+                'level': 47,
+                'location': '',
+                'regen_time': '3시간',
+                'last_kill_time': regen_time
+            }
+        else:
+            boss_list[boss_name]['last_kill_time'] = regen_time
+
+    # Create a list of tuples that contains the boss name and the expected time of appearance
+    bosses_with_spawn_time = []
+    for boss_name, boss_info in boss_list.items():
+        regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
+        bosses_with_spawn_time.append((boss_name, regen_time))
+
+    # Sort the list of tuples based on the expected time of appearance
+    bosses_with_spawn_time.sort(key=lambda x: x[1])
 
     # Create a new dictionary that contains the sorted bosses
     sorted_boss_list = {}
-    for boss_name, _, _ in bosses_with_spawn_time:
+    for boss_name, _ in bosses_with_spawn_time:
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
