@@ -34,32 +34,41 @@ async def on_message(message):
         return
 
     content = message.content.split()
-    if len(content) < 2:
+    if len(content) < 1:
         return
 
-    command, boss_name = content[:2]
+    command = content[0]
 
-    if boss_name not in boss_list:
-        return
-
-    boss = boss_list[boss_name]
-
-    if command == '컷':
-        kill_time = message.created_at
-        boss['last_kill_time'] = kill_time
-        await message.channel.send(f'{boss_name} killed at {kill_time.strftime("%H:%M:%S")}.')
-
-    elif command == '시간':
-        if len(content) < 3:
+    if command in ['컷', '시간', '초기화']:
+        if len(content) < 2:
             return
-        kill_time_str = content[2]
-        try:
-            kill_time = datetime.datetime.strptime(kill_time_str, "%H%M")
+        boss_name = content[1]
+
+        if boss_name not in boss_list:
+            return
+
+        boss = boss_list[boss_name]
+
+        if command == '컷':
+            kill_time = message.created_at
             boss['last_kill_time'] = kill_time
             await message.channel.send(f'{boss_name} killed at {kill_time.strftime("%H:%M:%S")}.')
 
-        except ValueError:
-            await message.channel.send('Invalid time format. Please use the format "HHMM".')
+        elif command == '시간':
+            if len(content) < 3:
+                return
+            kill_time_str = content[2]
+            try:
+                kill_time = datetime.datetime.strptime(kill_time_str, "%H%M")
+                boss['last_kill_time'] = kill_time
+                await message.channel.send(f'{boss_name} killed at {kill_time.strftime("%H:%M:%S")}.')
+
+            except ValueError:
+                await message.channel.send('Invalid time format. Please use the format "HHMM".')
+
+        elif command == '초기화':
+            boss['last_kill_time'] = None
+            await message.channel.send(f'{boss_name} kill history has been reset.')
 
     elif command == '보스':
         boss_list_str = "Boss List\n"
@@ -73,10 +82,6 @@ async def on_message(message):
                 boss_list_str += f"{b['name']} (Lv. {b['level']}) => No kill history\n"
 
         await message.channel.send(boss_list_str)
-
-    elif command == '초기화':
-        boss['last_kill_time'] = None
-        await message.channel.send(f'{boss_name} kill history has been reset.')
 
 try:
     client.run(TOKEN)
