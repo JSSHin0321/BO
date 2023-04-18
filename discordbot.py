@@ -47,20 +47,21 @@ async def boss_kill(message, boss_name, input_time_str=None):
         if now >= spawn_time:
             spawn_time += datetime.timedelta(days=1)
 
-    boss_list[boss_name]['spawn_time'] = spawn_time # 'last_kill_time' -> 'spawn_time' 으로 변경
+    boss_list[boss_name]['spawn_time'] = spawn_time
 
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {spawn_time.strftime('%H:%M:%S')}에 다시 출현합니다.")
 
+    # Update boss list
+    await print_boss_list(message)
+
 
 async def print_boss_list(message):
-    sorted_boss_list = await sort_bosses_by_spawn_time() # 'sort_bosses_by_spawn_time' 함수 호출
+    sorted_boss_list = await sort_bosses_by_spawn_time()
 
     boss_list_str = "```Boss List:\n"
-    for boss in sorted_boss_list.values():
-        next_spawn_time_str = " "
-        if boss['spawn_time']: # 'last_kill_time' -> 'spawn_time' 으로 변경
-            next_spawn_time_str = boss['spawn_time'].strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+    for boss_name, boss_info in sorted_boss_list.items():
+        spawn_time_str = boss_info['spawn_time'].strftime("%H:%M:%S") if boss_info['spawn_time'] else " "
+        boss_list_str += f"{boss_name} (Lv. {boss_info['level']}) => {spawn_time_str}\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
 
@@ -106,30 +107,12 @@ async def on_message(message):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
 
-async def boss_kill(message, boss_name, input_time_str=None):
-    tz = pytz.timezone('Asia/Seoul')
-    now = datetime.datetime.now(tz)
 
-    if input_time_str is None:
-        spawn_time = now
-    else:
-        try:
-            input_time = datetime.datetime.strptime(input_time_str, '%H%M')
-        except ValueError:
-            await message.channel.send(f"{boss_name} : 입력한 시간이 유효하지 않습니다.")
-            return
+try:
+    client.run(TOKEN)
+except discord.errors.LoginFailure as e:
+    print("Improper token has been passed.")
 
-        spawn_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
-
-        if now >= spawn_time:
-            spawn_time += datetime.timedelta(days=1)
-
-    boss_list[boss_name]['spawn_time'] = spawn_time
-
-    await message.channel.send(f"{boss_name} Kill. {boss_name}는 {spawn_time.strftime('%H:%M:%S')}에 다시 출현합니다.")
-
-    # Update boss list
-    await print_boss_list(message)
 
 
 
