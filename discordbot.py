@@ -1,7 +1,8 @@
 import discord
 from dotenv import load_dotenv
 import os
-import datetime
+from datetime
+import datetime, timedelta
 import pytz
 
 load_dotenv()
@@ -28,96 +29,60 @@ boss_list = {
     }
 }
 
+# 보스 kill 시간 저장 및 출력
+def save_kill_time(boss_name, kill_time):
+    boss_list[boss_name]['last_kill_time'] = kill_time
+    print(f'{boss_name}의 마지막 처치 시간: {kill_time}')
+
+# 보스 출현 예상 시간 계산 및 출력
+def print_respawn_time(boss_name):
+    regen_time = boss_list[boss_name]['regen_time']
+    last_kill_time = boss_list[boss_name]['last_kill_time']
+    if last_kill_time is None:
+        print(f'{boss_name}은(는) 처치 기록이 없습니다.')
+        return
+    respawn_time = last_kill_time + timedelta(hours=int(regen_time[0]))
+    print(f'{boss_name}의 출현 예상 시간: {respawn_time.strftime("%Y-%m-%d %H:%M:%S")}')
+
+# 보스 리스트 출력 및 정렬
+def print_boss_list():
+    print('보스 리스트')
+    print('----------')
+    bosses = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] + timedelta(hours=int(x['regen_time'][0])))
+    for boss in bosses:
+        respawn_time = None
+        if boss['last_kill_time'] is not None:
+            respawn_time = boss['last_kill_time'] + timedelta(hours=int(boss['regen_time'][0]))
+        print(f"{boss['name']}: 출현 예상 시간 {respawn_time.strftime('%Y-%m-%d %H:%M:%S') if respawn_time else '미정'}")
+
+# 보스 kill 기록 초기화
+def reset_kill_time(boss_name):
+    boss_list[boss_name]['last_kill_time'] = None
+    print(f'{boss_name}의 처치 기록이 초기화되었습니다.')
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content == '보스':
-        await print_boss_list(message)
+    if message.content.startswith(PREFIX):
+        command = message.content[len(PREFIX):
 
-    for boss_name in boss_list.keys():
-        if message.content == f"{boss_name} 컷":
-            await boss_kill(message, boss_name)
-        if message.content.startswith(f"{boss_name} "):
-            input_time_str = message.content.split(' ')[1]
-            await boss_kill(message, boss_name, input_time_str)
-
-        if message.content == f"{boss_name} 초기화":
-            boss_list[boss_name]['last_kill_time'] = None
-            await message.channel.send(f"{boss_name} kill 기록이 초기화되었습니다.")
-
-async def boss_kill(message, boss_name, input_time_str=None):
-    tz = pytz.timezone('Asia/Seoul')
-    now = datetime.datetime.now(tz)
-
-    if input_time_str is None:
-        kill_time = now
-    else:
-        try:
-            input_time = datetime.datetime.strptime(input_time_str, '%H%M')
-        except ValueError:
-            await message.channel.send(f"{boss_name} : 입력한 시간이 유효하지 않습니다.")
-            return
-
-        kill_time = datetime.datetime(now.year, now.month, now.day, input_time.hour, input_time.minute, tzinfo=tz)
-
-        if now >= kill_time:
-            kill_time += datetime.timedelta(days=1)
-
-    regen_time = kill_time + datetime.timedelta(hours=3)
-    regen_time_str = regen_time.strftime("%H:%M:%S")
-
-    boss_list[boss_name]['last_kill_time'] = kill_time
-
-    await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
-
-    # Update boss list
-    await print_boss_list(message)
-
-
-async def print_boss_list(message):
-    sorted_boss_list = await sort_bosses_by_spawn_time()
-
-    boss_list_str = "```Boss List:\n"
-    for boss in sorted_boss_list.values():
-        next_spawn_time_str = " "
-        if boss['last_kill_time']:
-            next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
-            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
-    boss_list_str += "```"
-    await message.channel.send(boss_list_str)
-
-async def sort_bosses_by_spawn_time():
-    tz = pytz.timezone('Asia/Seoul')
-    now = datetime.datetime.now(tz)
-
-    # Create a list of tuples that contains the boss name and the expected time of appearance
-    bosses_with_spawn_time = []
-    for boss_name, boss_info in boss_list.items():
-        if boss_info['last_kill_time']:
-            regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
+    if command.startswith('보스이름 '):
+        boss_name = command.split()[1]
+        if boss_name not in boss_list:
+            await message.channel.send(f'{boss_name}은(는) 등록되지 않은 보스입니다.')
         else:
-            # Assign a very large estimated time to bosses without a last kill time
-            regen_time = now + datetime.timedelta(days=365)
-
-        bosses_with_spawn_time.append((boss_name, regen_time))
-
-    # Sort the list of tuples based on the estimated time of appearance
-    bosses_with_spawn_time.sort(key=lambda x: x[1])
-
-    # Create a new dictionary that contains the sorted bosses
-    sorted_boss_list = {}
-    for boss_name, _ in bosses_with_spawn_time:
-        sorted_boss_list[boss_name] = boss_list[boss_name]
-
-    return sorted_boss_list
-
-
-
-
+            if command.endswith(' 컷'):
+                save_kill_time(boss_name, message.created_at.astimezone(pytz.timezone('Asia/Seoul')))
+            elif command.endswith(' 시간'):
+                print_respawn_time(boss_name)
+            elif command == '보스':
+                print_boss_list()
+            elif command.endswith(' 초기화'):
+                reset_kill_time(boss_name)
+            else:
+                await message.channel.send(f'잘못된 명령어입니다. "{PREFIX}도움말"을 입력해 사용 가능한 명령어를 확인하세요.')
 
 try:
     client.run(TOKEN)
