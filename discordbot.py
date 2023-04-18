@@ -80,16 +80,15 @@ async def print_boss_list(message):
 
     boss_list_str = "```Boss List:\n"
     for boss in sorted_boss_list.values():
-        next_spawn_time_str = " "
-        if boss['last_kill_time']:
+        if boss['last_kill_time'] is None:
+            next_spawn_time_str = "No information available"
+        else:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
             next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        else:
-            next_spawn_time_str = "No information"
-
         boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
+
 
 
 
