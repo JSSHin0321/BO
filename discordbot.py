@@ -1,3 +1,4 @@
+from cmath import log
 from distutils.sysconfig import PREFIX
 import discord
 from dotenv import load_dotenv
@@ -31,11 +32,6 @@ boss_list = {
 
 
 @client.event
-async def on_ready():
-    print('Logged on as {0}!'.format(client.user))
-
-
-@client.event
 async def on_message(message):
     if message.author == client.user:
         return
@@ -49,7 +45,7 @@ async def on_message(message):
         elif message.content.startswith(f"{boss_name} "):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
-            
+
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
@@ -69,7 +65,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
             kill_time += datetime.timedelta(days=1)
 
     regen_time = kill_time + datetime.timedelta(hours=3)
-    regen_time_str = regen_time.strftime("%H:%M:%S") # 이 부분 추가
+    regen_time_str = regen_time.strftime("%H:%M:%S")
 
     boss_list[boss_name]['last_kill_time'] = kill_time
 
@@ -79,7 +75,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
     await print_boss_list(message)
 
 
-async def print_boss_list(message, recently_killed_boss=None):
+async def print_boss_list(message):
     sorted_boss_list = await sort_bosses_by_spawn_time()
 
     boss_list_str = "```Boss List:\n"
@@ -88,14 +84,9 @@ async def print_boss_list(message, recently_killed_boss=None):
         if boss['last_kill_time']:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
             next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        if recently_killed_boss and boss['name'] == recently_killed_boss:
-            boss_list_str += f"~~{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}~~\n"
-        else:
-            boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
-
-
 
 async def sort_bosses_by_spawn_time():
     tz = pytz.timezone('Asia/Seoul')
@@ -126,6 +117,12 @@ async def sort_bosses_by_spawn_time():
                     if now >= regen_time:
                         regen_time += datetime.timedelta(days=1)
                 bosses_with_spawn_time.append((boss_name, regen_time))
+        else:
+            # Add a dummy value for bosses that have not been killed yet and don't have a regen time
+            bosses_with_spawn_time.append((boss_name, None))
+
+    # Filter out bosses that have no regen time
+    bosses_with_spawn_time = [boss for boss in bosses_with_spawn_time if boss[1] is not None]
 
     # Sort the list of tuples based on the estimated time of appearance
     bosses_with_spawn_time.sort(key=lambda x: (x[1], x[0].endswith('컷'), x[0].endswith('시간')))
@@ -136,12 +133,6 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
-
-
-
-
-
-
 
 
 
