@@ -97,10 +97,10 @@ async def sort_bosses_by_spawn_time():
     for boss_name, boss_info in boss_list.items():
         if boss_info['last_kill_time']:
             regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
-            if regen_time <= now:
-                regen_time += datetime.timedelta(days=1)
         else:
-            regen_time = now
+            # Assign a very large estimated time to bosses without a last kill time
+            regen_time = now + datetime.timedelta(days=365)
+
         bosses_with_spawn_time.append((boss_name, regen_time))
 
     # Sort the list of tuples based on the estimated time of appearance
@@ -112,6 +112,8 @@ async def sort_bosses_by_spawn_time():
         sorted_boss_list[boss_name] = boss_list[boss_name]
 
     return sorted_boss_list
+
+
 
 
 
