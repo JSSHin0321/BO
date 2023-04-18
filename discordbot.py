@@ -8,10 +8,18 @@ import pytz
 
 load_dotenv()
 
-PREFIX = os.environ['PREFIX']
-TOKEN = os.environ['TOKEN']
+try:
+    PREFIX = os.environ['PREFIX']
+except KeyError:
+    PREFIX = None
 
-client = discord.Client()
+try:
+    TOKEN = os.environ['TOKEN']
+except KeyError:
+    TOKEN = None
+
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
 
 boss_list = {
     '제니나': {
@@ -76,8 +84,9 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
 
 async def print_boss_list(message):
+    sorted_boss_list = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or datetime.datetime.max)
     boss_list_str = "```보스 리스트:\n"
-    for boss in boss_list.values():
+    for boss in sorted_boss_list:
         next_spawn_time_str = " "
         if boss['last_kill_time']:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
@@ -91,7 +100,11 @@ async def print_boss_list(message):
 
 
 
+
 try:
-    client.run(TOKEN)
+    client = discord.Client()
+    # 이어지는 코드
+except TypeError:
+    pass
 except discord.errors.LoginFailure as e:
     print("Improper token has been passed.")
