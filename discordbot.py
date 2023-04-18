@@ -101,6 +101,14 @@ async def sort_bosses_by_spawn_time():
             # Assign a very large estimated time to bosses without a last kill time
             regen_time = now + datetime.timedelta(days=365)
 
+        # Check if boss was registered with a time command
+        for command in ['cut', 'time']:
+            if boss_name in boss_reg_times[command]:
+                input_time = datetime.datetime(now.year, now.month, now.day, boss_reg_times[command][boss_name]['hour'], boss_reg_times[command][boss_name]['minute'], tzinfo=tz)
+                if now >= input_time:
+                    input_time += datetime.timedelta(days=1)
+                regen_time = min(regen_time, input_time + datetime.timedelta(hours=3))
+
         bosses_with_spawn_time.append((boss_name, regen_time))
 
     # Sort the list of tuples based on the estimated time of appearance
