@@ -61,7 +61,16 @@ async def boss_kill(message, boss_name, input_time_str=None):
     await message.channel.send(f"{boss_name} Kill.")
 
     # Update boss list
-    await print_boss_list(message)
+    boss_list_sorted = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] + x['regen_time'] if x['last_kill_time'] else datetime.datetime.max)
+    boss_list_str = "```보스 리스트:\n"
+    for boss in boss_list_sorted:
+        next_spawn_time_str = ' '
+        if boss['last_kill_time']:
+            next_spawn_time = boss['last_kill_time'] + boss['regen_time']
+            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+    boss_list_str += "```"
+    await message.channel.send(boss_list_str)
 
 @client.event
 async def on_ready():
