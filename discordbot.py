@@ -73,8 +73,7 @@ async def boss_kill(message, boss_name, input_time_str=None):
     # Update boss list
     await print_boss_list(message)
 
-
-async def print_boss_list(message):
+async def print_boss_list(message, recently_killed_boss=None):
     sorted_boss_list = await sort_bosses_by_spawn_time()
 
     boss_list_str = "```Boss List:\n"
@@ -83,9 +82,13 @@ async def print_boss_list(message):
         if boss['last_kill_time']:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
             next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+        if recently_killed_boss and boss['name'] == recently_killed_boss:
+            boss_list_str += f"~~{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}~~\n"
+        else:
+            boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
+
 
 
 async def sort_bosses_by_spawn_time():
