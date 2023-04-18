@@ -98,31 +98,25 @@ async def sort_bosses_by_spawn_time():
 
     # Iterate through all bosses and add them to the appropriate dictionary
     for boss_name, boss_info in boss_list.items():
-        if boss_info['last_kill_time']:
-            regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
-        else:
-            regen_time = now
-
         if boss_info['name'] in cut_bosses:
             # Boss has been registered with 'cut' command, use that time instead
             regen_time = cut_bosses[boss_info['name']]
-
-        if boss_info['name'] in time_bosses:
+        elif boss_info['name'] in time_bosses:
             # Boss has been registered with 'time' command, use that time instead
             regen_time = time_bosses[boss_info['name']]
+        elif boss_info['last_kill_time']:
+            # Use last kill time if available
+            regen_time = boss_info['last_kill_time'] + datetime.timedelta(hours=3)
+        else:
+            # If no information is available, assume the boss will spawn immediately
+            regen_time = now
 
         # Add boss to the appropriate dictionary
         if boss_info['last_kill_time']:
             cut_bosses[boss_info['name']] = regen_time
+        elif boss_name in boss_list:
+            boss_list[boss_name]['last_kill_time'] = regen_time
         else:
-            time_bosses[boss_info['name']] = regen_time
-
-    # Merge cut_bosses and time_bosses dictionaries with boss_list to get complete list of bosses
-    for boss_name, regen_time in cut_bosses.items():
-        boss_list[boss_name]['last_kill_time'] = regen_time
-
-    for boss_name, regen_time in time_bosses.items():
-        if boss_name not in boss_list:
             boss_list[boss_name] = {
                 'name': boss_name,
                 'level': 47,
@@ -130,8 +124,6 @@ async def sort_bosses_by_spawn_time():
                 'regen_time': '3시간',
                 'last_kill_time': regen_time
             }
-        else:
-            boss_list[boss_name]['last_kill_time'] = regen_time
 
     # Create a list of tuples that contains the boss name and the expected time of appearance
     bosses_with_spawn_time = []
