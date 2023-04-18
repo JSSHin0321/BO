@@ -32,26 +32,13 @@ boss_list = {
 
 
 
-async def print_boss_list(message):
-    boss_list_sorted = sorted(boss_list.values(), key=lambda x: (x['last_kill_time'] or datetime.datetime.min, x['name']))
-    boss_list_str = "```보스 리스트:\n"
-    for boss in boss_list_sorted:
-        next_spawn_time_str = " "
-        if boss['last_kill_time']:
-            next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
-            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
-    boss_list_str += "```"
-    await message.channel.send(boss_list_str)
-
-
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content == '보스':
+    if message.content == '보스 목록':
         await print_boss_list(message)
 
     for boss_name in boss_list.keys():
@@ -86,8 +73,17 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
-    # Update boss list
-    await print_boss_list(message)
+async def print_boss_list(message):
+    boss_list_str = "```보스 리스트:\n"
+    for boss in boss_list.values():
+        next_spawn_time_str = " "
+        if boss['last_kill_time']:
+            next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
+            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
+        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+    boss_list_str += "```"
+    await message.channel.send(boss_list_str)
+
 
 
 try:
