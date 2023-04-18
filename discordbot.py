@@ -46,15 +46,6 @@ async def on_message(message):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
 
-        # 보스 초기화 명령어 추가
-        elif message.content == f"{boss_name} 초기화":
-            boss_list[boss_name]['last_kill_time'] = None
-            await message.channel.send(f"{boss_name}의 타이머가 초기화 되었습니다.")
-
-    # 보스 목록 출력 명령어 처리
-    if message.content == '보스':
-        await print_boss_list(message)
-
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
