@@ -50,6 +50,10 @@ async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
     now = datetime.datetime.now(tz)
 
+    boss = boss_list[boss_name]
+    last_kill_time = boss['last_kill_time']
+    level = boss['level']
+
     if input_time_str is None:
         kill_time = now
     else:
@@ -59,8 +63,6 @@ async def boss_kill(message, boss_name, input_time_str=None):
             await message.channel.send(f"{boss_name} : 입력한 시간이 유효하지 않습니다.")
             return
 
-        last_kill_time = boss_list[boss_name]['last_kill_time']
-
         if last_kill_time is not None and input_time < last_kill_time.time():
             kill_time = datetime.datetime.combine(now.date(), input_time) + datetime.timedelta(days=1)
         else:
@@ -69,13 +71,15 @@ async def boss_kill(message, boss_name, input_time_str=None):
         regen_time = kill_time + datetime.timedelta(hours=3)
         regen_time_str = regen_time.strftime("%H:%M:%S")
 
-        boss_list[boss_name]['last_kill_time'] = kill_time
+        boss_list[boss_name] = {
+            'name': boss_name,
+            'level': level,
+            'location': boss['location'],
+            'regen_time': '3시간',
+            'last_kill_time': kill_time
+        }
 
         await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
-
-        # Update boss list
-        await print_boss_list(message)
-
 
 async def print_boss_list(message):
     sorted_boss_list = await sort_bosses_by_spawn_time()
