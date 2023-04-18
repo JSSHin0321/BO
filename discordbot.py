@@ -76,14 +76,26 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
 
 async def print_boss_list(message):
-    boss_list_str = "보스 리스트:\n"
+    # Create a list of bosses with calculated next spawn times
+    boss_spawn_times = []
     for boss in boss_list.values():
-        next_spawn_time_str = " "
         if boss['last_kill_time']:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
-            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+            boss_spawn_times.append((boss['name'], boss['level'], next_spawn_time))
+        else:
+            boss_spawn_times.append((boss['name'], boss['level'], None))
+
+    # Sort the list by next spawn time (ignoring bosses with no last_kill_time)
+    sorted_boss_spawn_times = sorted(boss_spawn_times, key=lambda x: x[2] if x[2] is not None else datetime.datetime.max)
+
+    # Generate the boss list string
+    boss_list_str = "보스 리스트:\n"
+    for boss_name, boss_level, next_spawn_time in sorted_boss_spawn_times:
+        next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S") if next_spawn_time else " "
+        boss_list_str += f"{boss_name} (Lv. {boss_level}) => {next_spawn_time_str}\n"
+
     await message.channel.send(boss_list_str)
+
 
 
 
