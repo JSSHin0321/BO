@@ -76,15 +76,27 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
 
 async def print_boss_list(message):
+    boss_timers = {}
+    for boss_name, boss_data in boss_list.items():
+        if boss_data['last_kill_time']:
+            boss_timers[boss_name] = {'time': boss_data['last_kill_time'] + datetime.timedelta(hours=3)}
+        else:
+            boss_timers[boss_name] = None
+
+    # 예상 출현 시간이 빠른 순서대로 보스 목록을 정렬합니다.
+    boss_timers_sorted = sorted(boss_timers.items(), key=lambda x: x[1]['time'] if x[1] else datetime.datetime.max)
+    boss_list_sorted = [x[0] for x in boss_timers_sorted] + [x for x in boss_list if x not in boss_timers]
+
     boss_list_str = "```보스 리스트:\n"
-    for boss in boss_list.values():
-        next_spawn_time_str = " "
-        if boss['last_kill_time']:
-            next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
-            next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
-        boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
+    for boss in boss_list_sorted:
+        if boss in boss_timers:
+            next_spawn_time_str = (boss_timers[boss]['time'] + datetime.timedelta(hours=9)).strftime("%H:%M:%S")
+            boss_list_str += f"{boss} (Lv. {boss_list[boss]['level']}) => {next_spawn_time_str}\n"
+        else:
+            boss_list_str += f"{boss} (Lv. {boss_list[boss]['level']}) => 출현 예상 없음\n"
     boss_list_str += "```"
     await message.channel.send(boss_list_str)
+
 
 
 
