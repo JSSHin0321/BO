@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import os
 import datetime
 import pytz
-import asyncio
 
 load_dotenv()
 
@@ -72,46 +71,13 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
     await message.channel.send(f"{boss_name} Kill. {boss_name}는 {regen_time_str}에 다시 출현합니다.")
 
-    # Add a short delay to allow the event loop to finish processing the current message
-    await asyncio.sleep(1)
-
     # Update boss list
-    await update_boss_list(message.channel)
+    await print_boss_list(message)
 
 
-
-async def update_boss_list(channel):
-    # Create a list of bosses with calculated next spawn times
-    boss_spawn_times = []
-    for boss in boss_list.values():
-        if boss['last_kill_time']:
-            next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
-            boss_spawn_times.append((boss['name'], boss['level'], next_spawn_time))
-        else:
-            boss_spawn_times.append((boss['name'], boss['level'], None))
-
-    # Sort the list by next spawn time (ignoring bosses with no last_kill_time)
-    sorted_boss_spawn_times = sorted(boss_spawn_times, key=lambda x: x[2] if x[2] is not None else datetime.datetime.max)
-
-    # Generate the boss list string
-    boss_list_str = "보스 리스트:\n"
-    for boss_name, boss_level, next_spawn_time in sorted_boss_spawn_times:
-        next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S") if next_spawn_time else " "
-        boss_list_str += f"{boss_name} (Lv. {boss_level}) => {next_spawn_time_str}\n"
-
-    # Find the existing boss list message and delete it
-    async for message in channel.history(limit=10):
-        if message.author == client.user and message.content.startswith("보스 리스트:"):
-            await message.delete()
-            break
-
-    # Send the updated boss list
-    await channel.send(boss_list_str)
-
-    
-    
+           
 async def print_boss_list(message):
-    await update_boss_list(message.channel)
+    # Create a list of bosses with calculated next spawn times
     boss_spawn_times = []
     for boss in boss_list.values():
         if boss['last_kill_time']:
@@ -132,10 +98,17 @@ async def print_boss_list(message):
     await message.channel.send(boss_list_str)
 
 
+    # Find the existing boss list message and delete it
+    async for message in channel.history(limit=10):
+        if message.author == client.user and message.content.startswith("보스 리스트:"):
+            await message.delete()
+            break
 
+    # Send the updated boss list
+    await channel.send(boss_list_str)
 
-
-
+    
+    
 try:
     client.run(TOKEN)
 except discord.errors.LoginFailure as e:
