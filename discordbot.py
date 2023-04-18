@@ -42,10 +42,9 @@ async def on_message(message):
     for boss_name in boss_list.keys():
         if message.content == f"{boss_name} 컷":
             await boss_kill(message, boss_name)
-        elif message.content.startswith(f"{boss_name} ") and message.content != f"{boss_name} 컷":
+        elif message.content.startswith(f"{boss_name} "):
             input_time_str = message.content.split(' ')[1]
             await boss_kill(message, boss_name, input_time_str)
-
 
 async def boss_kill(message, boss_name, input_time_str=None):
     tz = pytz.timezone('Asia/Seoul')
@@ -78,18 +77,13 @@ async def boss_kill(message, boss_name, input_time_str=None):
 
 async def print_boss_list(message):
     boss_list_str = "보스 리스트:\n"
-    
-    # 보스 리스트를 next_spawn_time 기준으로 정렬
-    sorted_boss_list = sorted(boss_list.values(), key=lambda x: x['last_kill_time'] + datetime.timedelta(hours=3) if x['last_kill_time'] else datetime.datetime.max)
-
-    for boss in sorted_boss_list:
+    for boss in boss_list.values():
         next_spawn_time_str = " "
         if boss['last_kill_time']:
             next_spawn_time = boss['last_kill_time'] + datetime.timedelta(hours=3)
             next_spawn_time_str = next_spawn_time.strftime("%H:%M:%S")
         boss_list_str += f"{boss['name']} (Lv. {boss['level']}) => {next_spawn_time_str}\n"
     await message.channel.send(boss_list_str)
-
 
 
 
