@@ -69,15 +69,16 @@ async def on_message(message):
         if len(parts) == 1 or parts[1] == '컷':
             boss['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
-        elif parts[1].isdigit():
-            hour = int(parts[1]) // 100
-            minute = int(parts[1]) % 100
+        elif parts[1].isdigit() and len(parts[1]) == 4:
+            hour = int(parts[1][:2])
+            minute = int(parts[1][2:])
             now = datetime.datetime.now()
             boss['last_kill_time'] = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
         elif parts[1] == '초기화':
             boss['last_kill_time'] = None
             await message.channel.send(f"{boss['name']}의 last kill time이 초기화되었습니다.")
+
 
 
 
