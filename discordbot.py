@@ -85,6 +85,25 @@ async def on_message(message):
         elif parts[1] == '초기화':
             boss['last_kill_time'] = None
             await message.channel.send(f"{boss['name']}의 last kill time이 초기화되었습니다.")
+    
+        # 갱신된 보스 리스트 출력
+        boss_info_list = []
+        for boss in boss_list.values():
+            if boss['last_kill_time'] is None:
+                expected_spawn_time = ''
+            else:
+                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
+                regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+                kst = pytz.timezone('Asia/Seoul')
+                expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
+                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
+            
+            boss_info = f"{boss['name']} (Lv. {boss['level']})  {expected_spawn_time}"
+            boss_info_list.append(boss_info)
+        
+        boss_info_str = "\n".join(boss_info_list)
+        boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
+        await message.channel.send(embed=boss_embed)
 
 
 
