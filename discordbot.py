@@ -172,6 +172,7 @@ async def on_message(message):
     
     if command == '보스':
         boss_info_list = []
+        max_boss_name_width = 8  # 보스 이름 최대 폭 설정
         for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
             if boss['last_kill_time'] is None:
                 expected_spawn_time = ' '
@@ -182,12 +183,15 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            boss_name = boss['name']
+            boss_name_str = f"{boss_name:<{max_boss_name_width}}"
+            boss_info = f"{boss_name_str} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
+
 
 
     elif command in boss_list:
