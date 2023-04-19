@@ -49,15 +49,16 @@ async def send_boss_alert(boss):
         time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
         if time_diff > 0 and time_diff <= 10:
             expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
-            await client.get_channel(1094324110345130067).send(f"보스가 10분 후에 {boss_info} (https://discord.gg/..) 출현합니다!")
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str} (위치: {boss['location']})"
+            await client.get_channel(1094324110345130067).send(f"{boss_info} 10분 후에 출현합니다!")
+
 
 async def check_boss_spawn():
     await client.wait_until_ready()
     while not client.is_closed():
         for boss in boss_list.values():
             await send_boss_alert(boss)
-        await asyncio.sleep(10 * 60)  # 10분 주기로 실행
+        await asyncio.sleep(60)  # 1분 주기로 실행
 
 client.loop.create_task(check_boss_spawn())
     
