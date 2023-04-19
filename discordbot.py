@@ -3,6 +3,7 @@ from distutils.sysconfig import PREFIX
 import discord
 from dotenv import load_dotenv
 import os
+import datetime
 load_dotenv()
 
 PREFIX = os.environ['PREFIX']
@@ -40,9 +41,20 @@ async def on_message(message):
         return
     
     if message.content == f'{PREFIX}보스':
-        boss_names = [boss['name'] for boss in boss_list.values()]
-        boss_list_str = "\n".join(boss_names)
-        await message.channel.send(f"보스 리스트:\n{boss_list_str}")
+        boss_info_list = []
+        for boss in boss_list.values():
+            if boss['last_kill_time'] is None:
+                expected_spawn_time = '알 수 없음'
+            else:
+                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
+                regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+                expected_spawn_time = last_kill_time + regen_time
+            
+            boss_info = f"{boss['name']}, level {boss['level']}, 출현 예상 시간: {expected_spawn_time}"
+            boss_info_list.append(boss_info)
+        
+        boss_info_str = "\n".join(boss_info_list)
+        await message.channel.send(f"보스 정보:\n{boss_info_str}")
 
 
 
