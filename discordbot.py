@@ -55,24 +55,23 @@ async def on_message(message):
                     await message.channel.send("올바른 명령어를 입력해주세요.")
             else:
                 await message.channel.send("해당 보스가 존재하지 않습니다.")
+        elif message.content == f'{PREFIX}보스':
+            boss_embed = discord.Embed(title="보스 정보", color=0x00FF00)
+            boss_embed.set_thumbnail(url="<BOSS THUMBNAIL URL>")
+            for boss in boss_list.values():
+                if boss['last_kill_time'] is None:
+                    expected_spawn_time = ''
+                else:
+                    last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
+                    regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+                    expected_spawn_time = last_kill_time + regen_time
+                    expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
+                
+                boss_embed.add_field(name=f"{boss['name']} (Lv. {boss['level']})", value=f"예상 출현 시간: {expected_spawn_time}", inline=False)
+            
+            await message.channel.send(embed=boss_embed)
         else:
             await message.channel.send("올바른 명령어를 입력해주세요.")
-    
-    elif message.content == f'{PREFIX}보스':
-        boss_embed = discord.Embed(title="보스 정보", color=0x00FF00)
-        boss_embed.set_thumbnail(url="<BOSS THUMBNAIL URL>")
-        for boss in boss_list.values():
-            if boss['last_kill_time'] is None:
-                expected_spawn_time = ''
-            else:
-                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
-                regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
-                expected_spawn_time = last_kill_time + regen_time
-                expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
-            
-            boss_embed.add_field(name=f"{boss['name']} (Lv. {boss['level']})", value=f"예상 출현 시간: {expected_spawn_time}", inline=False)
-        
-        await message.channel.send(embed=boss_embed)
 
 
 
