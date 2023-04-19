@@ -183,12 +183,12 @@ async def on_message(message):
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
             boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format(boss['name'], boss['level'], expected_spawn_time)
-
             boss_info_list.append(boss_info)
 
-        boss_info_str = "\n".join(boss_info_list)
+        boss_info_str = "\n\n".join(boss_info_list)
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
+
 
 
     elif command in boss_list:
