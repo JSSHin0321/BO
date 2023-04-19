@@ -67,8 +67,12 @@ async def on_message(message):
                     expected_spawn_time = last_kill_time + regen_time
                     expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
                 
+                # 예상 출현 시간이 없는 경우 빈 문자열로 설정
+                if expected_spawn_time == '':
+                    expected_spawn_time = '미확인'
                 
-                boss_embed.add_field(name=f"{boss['name']} (Lv. {boss['level']})", value=f"예상 출현 시간: {expected_spawn_time}", inline=False)
+                boss_embed.add_field(name=f"{boss['name']} (Lv. {boss['level']})", value=f"예상 출현 시간: {expected_spawn_time}", inline=False
+
             
             await message.channel.send(embed=boss_embed)
         else:
