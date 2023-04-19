@@ -59,10 +59,6 @@ async def on_message(message):
                 kst = pytz.timezone('Asia/Seoul')
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
-                time_diff = (expected_spawn_time - datetime.datetime.now(kst)).total_seconds()
-                if time_diff <= 600 and time_diff > 0:
-                    alert_msg = f"{boss['name']} (Lv. {boss['level']}) ==> 보스 출현 10분 남았습니다.!"
-                    await message.channel.send(alert_msg)
 
             boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
