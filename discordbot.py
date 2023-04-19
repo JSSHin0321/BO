@@ -42,15 +42,17 @@ async def on_ready():
 async def send_boss_alert(boss):
     kst = pytz.timezone('Asia/Seoul')
     now_kst = datetime.datetime.now(kst)
+
     if boss['last_kill_time'] is not None:
         last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
         regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
         expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
         time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
-        if time_diff > 0 and time_diff <= 10:
+        if time_diff == 10:
             expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str} (위치: {boss['location']})"
-            await client.get_channel(1094324110345130067).send(f"{boss_info} 10분 후에 출현합니다!")
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
+            await client.get_channel(1094324110345130067).send(f"보스가 10분 후에 {boss_info} ({boss['location']}) 출현합니다!")
+
 
 
 async def check_boss_spawn():
