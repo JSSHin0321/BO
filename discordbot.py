@@ -4,6 +4,8 @@ import discord
 from dotenv import load_dotenv
 import os
 import datetime
+import pytz
+
 load_dotenv()
 
 PREFIX = os.environ['PREFIX']
@@ -54,8 +56,14 @@ async def on_message(message):
             else:
                 last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
                 regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+                kst = pytz.timezone('Asia/Seoul')
+                now_kst = datetime.datetime.now(kst)
                 expected_spawn_time = last_kill_time + regen_time
-                expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
+                expected_spawn_time = expected_spawn_time.replace(tzinfo=kst)
+                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
+                expected_spawn_time = kst.localize(datetime.datetime.strptime(expected_spawn_time, '%Y-%m-%d %H:%M:%S'))
+                expected_spawn_time = expected_spawn_time.astimezone(kst)
+                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
             
             boss_info = f"{boss['name']} (Lv. {boss['level']})  {expected_spawn_time}"
             boss_info_list.append(boss_info)
