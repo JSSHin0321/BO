@@ -141,7 +141,7 @@ async def send_boss_alert(boss):
         time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
     if 9 <= time_diff < 11:
         expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
-        boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format(boss['name'], boss['level'], expected_spawn_time_str)
+        boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
         await client.get_channel(1094324110345130067).send(f"보스가 10분 후에 {boss_info} ({boss['location']}) 출현합니다!")
 
 
@@ -182,7 +182,7 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format(boss['name'], boss['level'], expected_spawn_time_str)
+            boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
@@ -224,10 +224,10 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format(boss['name'], boss['level'], expected_spawn_time_str)
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
 
-        boss_info_str = "\n".join(["{:<10}".format(line) for line in boss_info_list])
+        boss_info_str = "\n".join(boss_info_list)
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
 
