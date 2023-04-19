@@ -30,6 +30,13 @@ boss_list = {
         'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbmjUmZ%2FbtsakfT1ktr%2FhSqjg4Pz9hKOkg3dYUJ540%2Fimg.png',
         'regen_time': '3시간',
         'last_kill_time': None
+    },
+    '카를로스': {
+    'name': '카를로스',
+    'level': 47,
+    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcgEGC0%2FbtsafQ2jL7m%2FGgLnruWauqt7XqiHj3kGpk%2Fimg.png',
+    'regen_time': '3시간',
+    'last_kill_time': None
     }
 }
 
