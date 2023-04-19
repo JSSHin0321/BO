@@ -57,7 +57,7 @@ async def check_boss_spawn():
     while not client.is_closed():
         for boss in boss_list.values():
             await send_boss_alert(boss)
-        await asyncio.sleep(60)  # 1분 주기로 실행
+        await asyncio.sleep(10 * 60)  # 10분 주기로 실행
 
 client.loop.create_task(check_boss_spawn())
     
