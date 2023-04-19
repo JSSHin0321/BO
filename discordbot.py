@@ -40,8 +40,27 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    if message.content == f'{PREFIX}보스':
-        boss_info_list = []
+    if message.content.startswith(f'{PREFIX}보스 '):
+        command = message.content.split(' ')
+        if len(command) == 2:
+            boss_name = command[1]
+            if boss_name in boss_list:
+                if command[0] == '컷':
+                    boss_list[boss_name]['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    await message.channel.send(f"{boss_name} 컷 기록 완료.")
+                elif command[0].isdigit():
+                    boss_list[boss_name]['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d ') + command[0][:2] + ':' + command[0][2:] + ':00.000000'
+                    await message.channel.send(f"{boss_name} {command[0]} 기록 완료.")
+                else:
+                    await message.channel.send("올바른 명령어를 입력해주세요.")
+            else:
+                await message.channel.send("해당 보스가 존재하지 않습니다.")
+        else:
+            await message.channel.send("올바른 명령어를 입력해주세요.")
+    
+    elif message.content == f'{PREFIX}보스':
+        boss_embed = discord.Embed(title="보스 정보", color=0x00FF00)
+        boss_embed.set_thumbnail(url="<BOSS THUMBNAIL URL>")
         for boss in boss_list.values():
             if boss['last_kill_time'] is None:
                 expected_spawn_time = ''
@@ -51,11 +70,8 @@ async def on_message(message):
                 expected_spawn_time = last_kill_time + regen_time
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
             
-            boss_info = f"{boss['name']} (Lv. {boss['level']})  {expected_spawn_time}"
-            boss_info_list.append(boss_info)
+            boss_embed.add_field(name=f"{boss['name']} (Lv. {boss['level']})", value=f"예상 출현 시간: {expected_spawn_time}", inline=False)
         
-        boss_info_str = "\n".join(boss_info_list)
-        boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
 
 
