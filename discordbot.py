@@ -61,19 +61,23 @@ async def on_message(message):
     if message.content.startswith(f'{PREFIX}'):
         cmd = message.content[len(PREFIX):].split()
         if cmd[0] == '컷':
-            boss_name = cmd[1]
-            boss = boss_list.get(boss_name)
-            if boss is None:
-                await message.channel.send(f"보스 이름이 올바르지 않습니다. ('{boss_name}')")
+            if len(cmd) != 2:
+                await message.channel.send(f"잘못된 형식의 명령어입니다. ('{PREFIX}제니나 컷')")
             else:
-                if boss['last_kill_time'] is None:
-                    await message.channel.send(f"{boss_name} 보스의 최근 킬 시간 기록이 없습니다.")
+                boss_name = cmd[1]
+                boss = boss_list.get(boss_name)
+                if boss is None:
+                    await message.channel.send(f"보스 이름이 올바르지 않습니다. ('{boss_name}')")
                 else:
-                    last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
-                    current_time = datetime.datetime.now()
-                    elapsed_time = current_time - last_kill_time
-                    elapsed_time_str = str(elapsed_time).split('.')[0]
-                    await message.channel.send(f"{boss_name} 보스의 마지막 킬 시간 기록: {last_kill_time.strftime('%Y-%m-%d %H:%M:%S')}, 경과 시간: {elapsed_time_str}")
+                    if boss['last_kill_time'] is None:
+                        await message.channel.send(f"{boss_name} 보스의 최근 킬 시간 기록이 없습니다.")
+                    else:
+                        last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
+                        current_time = datetime.datetime.now()
+                        elapsed_time = current_time - last_kill_time
+                        elapsed_time_str = str(elapsed_time).split('.')[0]
+                        await message.channel.send(f"{boss_name} 보스의 마지막 킬 시간 기록: {last_kill_time.strftime('%Y-%m-%d %H:%M:%S')}, 경과 시간: {elapsed_time_str}")
+
         
         elif cmd[0] in boss_list:
             boss_name = cmd[0]
