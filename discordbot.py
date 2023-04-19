@@ -58,9 +58,9 @@ async def on_message(message):
                 regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
                 kst = pytz.timezone('Asia/Seoul')
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
-                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
+                expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
             
-            boss_info = f"{boss['name']} (Lv. {boss['level']})  {expected_spawn_time}"
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
         
         boss_info_str = "\n".join(boss_info_list)
@@ -96,9 +96,9 @@ async def on_message(message):
                 regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
                 kst = pytz.timezone('Asia/Seoul')
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
-                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d ==> %H:%M:%S')
+                expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
             
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) : {expected_spawn_time}"
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
         
         boss_info_str = "\n".join(boss_info_list)
