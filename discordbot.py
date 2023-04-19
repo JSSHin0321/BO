@@ -37,6 +37,31 @@ boss_list = {
 async def on_ready():
     print(f'Logged in as {client.user}.')
 
+async def send_boss_alert(boss):
+    kst = pytz.timezone('Asia/Seoul')
+    now_kst = datetime.datetime.now(kst)
+    if boss['last_kill_time'] is not None:
+        last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
+        regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+        expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
+        time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
+        if time_diff > 0 and time_diff <= 10:
+            expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
+            await client.get_channel(CHANNEL_ID).send(f"보스가 10분 후에 {boss_info} (https://discord.gg/..) 출현합니다!")
+
+async def check_boss_spawn():
+    await client.wait_until_ready()
+    while not client.is_closed():
+        for boss in boss_list.values():
+            await send_boss_alert(boss)
+        await asyncio.sleep(60)  # 1분 주기로 실행
+
+client.loop.create_task(check_boss_spawn())
+    
+    
+    
+    
 @client.event
 async def on_message(message):
     if message.author == client.user:
