@@ -40,7 +40,13 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    if message.content == f'{PREFIX}보스':
+    if not message.content.startswith(PREFIX):
+        return
+    
+    parts = message.content.split()
+    command = parts[0][len(PREFIX):]
+    
+    if command == '보스':
         boss_info_list = []
         for boss in boss_list.values():
             if boss['last_kill_time'] is None:
@@ -58,44 +64,20 @@ async def on_message(message):
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
 
-    if message.content.startswith(f'{PREFIX}'):
-        cmd = message.content[len(PREFIX):].split()
-        if cmd[0] == '컷':
-            if len(cmd) != 2:
-                await message.channel.send(f"잘못된 형식의 명령어입니다. ('{PREFIX}제니나 컷')")
-            else:
-                boss_name = cmd[1]
-                boss = boss_list.get(boss_name)
-                if boss is None:
-                    await message.channel.send(f"보스 이름이 올바르지 않습니다. ('{boss_name}')")
-                else:
-                    if boss['last_kill_time'] is None:
-                        await message.channel.send(f"{boss_name} 보스의 최근 킬 시간 기록이 없습니다.")
-                    else:
-                        last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
-                        current_time = datetime.datetime.now()
-                        elapsed_time = current_time - last_kill_time
-                        elapsed_time_str = str(elapsed_time).split('.')[0]
-                        await message.channel.send(f"{boss_name} 보스의 마지막 킬 시간 기록: {last_kill_time.strftime('%Y-%m-%d %H:%M:%S')}, 경과 시간: {elapsed_time_str}")
-
-        
-        elif cmd[0] in boss_list:
-            boss_name = cmd[0]
-            boss = boss_list[boss_name]
-            if len(cmd) == 1:
-                await message.channel.send(f"{boss_name} 보스의 최근 킬 시간 기록: {boss['last_kill_time']}")
-            else:
-                try:
-                    kill_time = datetime.datetime.strptime(cmd[1], '%H%M')
-                    today_str = datetime.datetime.now().strftime('%Y-%m-%d')
-                    kill_time_str = f"{today_str} {cmd[1][0:2]}:{cmd[1][2:]}:00"
-                    boss['last_kill_time'] = kill_time_str
-                    await message.channel.send(f"{boss_name} 보스의 최근 킬 시간이 {kill_time_str}로 기록되었습니다.")
-                except ValueError:
-                    await message.channel.send(f"잘못된 형식의 시간입니다. ('{cmd[1]}')")
-        
-        else:
-            await message.channel.send(f"올바르지 않은 명령어입니다. ('{cmd[0]}')")  
+    elif command in boss_list:
+        boss = boss_list[command]
+        if len(parts) == 1 or parts[1] == '컷':
+            boss['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+            await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
+        elif parts[1].isdigit():
+            hour = int(parts[1]) // 100
+            minute = int(parts[1]) % 100
+            now = datetime.datetime.now()
+            boss['last_kill_time'] = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+            await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
+        elif parts[1] == '초기화':
+            boss['last_kill_time'] = None
+            await message.channel.send(f"{boss['name']}의 last kill time이 초기화되었습니다.")
 
 
 
