@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import os
 import datetime
 import pytz
+import asyncio
+
 
 load_dotenv()
 
