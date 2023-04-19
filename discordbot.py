@@ -70,7 +70,7 @@ async def on_message(message):
 
     elif command in boss_list:
         boss = boss_list[command]
-        if len(parts) == 2  parts[1] == '컷':
+        if len(parts) == 2 and parts[1] == '컷':
             boss['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
         elif parts[1].isdigit() and len(parts[1]) == 4:
