@@ -67,15 +67,19 @@ async def on_message(message):
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
 
+    if command.startswith('보스'):
+        boss_name = command[3:]
+        if boss_name in boss_list:
+            boss_location = boss_list[boss_name]['location']
+            await message.channel.send(boss_location)
 
+        
+        
     elif command in boss_list:
         boss = boss_list[command]
         if len(parts) == 2 and parts[1] == '컷':
             boss['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
-        elif len(parts) == 1:
-            location_link = boss['location']
-            await message.channel.send(location_link)
         elif parts[1].isdigit() and len(parts[1]) == 4:
             kst = pytz.timezone('Asia/Seoul')
             now_kst = datetime.datetime.now(kst)
