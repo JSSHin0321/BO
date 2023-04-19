@@ -172,10 +172,10 @@ async def on_message(message):
     
     if command == '보스':
         boss_info_list = []
-        max_boss_name_width = 8  # 보스 이름 최대 폭 설정
+        max_name_length = max([len(boss['name']) for boss in boss_list.values()])  # 최대 보스 이름 길이 구하기
         for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
             if boss['last_kill_time'] is None:
-                expected_spawn_time = ' '
+                expected_spawn_time = ' ' * 8  # 8칸 띄어쓰기로 표시
             else:
                 last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
                 regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
@@ -183,9 +183,10 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_name = boss['name']
-            boss_name_str = f"{boss_name:<{max_boss_name_width}}"
-            boss_info = f"{boss_name_str} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            # 보스 이름을 오른쪽 정렬하고 최대 이름 길이만큼 빈칸을 추가하여 출력
+            name_format = f"{{:<{max_name_length}}}"
+            boss_name = name_format.format(boss['name'])
+            boss_info = f"{boss_name} (Lv. {boss['level']}) ==> {expected_spawn_time}"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
