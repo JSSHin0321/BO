@@ -170,28 +170,25 @@ async def on_message(message):
     parts = message.content.split()
     command = parts[0][len(PREFIX):]
     
-if command == '보스':
-    boss_info_list = []
-    max_boss_name_width = max([len(boss['name']) for boss in boss_list.values()])
-    for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
-        if boss['last_kill_time'] is None:
-            expected_spawn_time = ' '
-        else:
-            last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
-            regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
-            kst = pytz.timezone('Asia/Seoul')
-            expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
-            expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
+    if command == '보스':
+        boss_info_list = []
+        for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
+            name = f"{boss['name']:<10}"
+            if boss['last_kill_time'] is None:
+                expected_spawn_time = ' '
+            else:
+                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
+                regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
+                kst = pytz.timezone('Asia/Seoul')
+                expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
+                expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-        boss_name = boss['name']
-        boss_level = boss['level']
-        boss_info = f"{boss_name:<{max_boss_name_width}} (Lv. {boss_level}) ==> {expected_spawn_time}"
-        boss_info_list.append(boss_info)
+            boss_info = f"{name} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            boss_info_list.append(boss_info)
 
-    boss_info_str = "\n".join(boss_info_list)
-    boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
-    await message.channel.send(embed=boss_embed)
-
+        boss_info_str = "\n".join(boss_info_list)
+        boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
+        await message.channel.send(embed=boss_embed)
 
 
 
