@@ -31,6 +31,34 @@ boss_list = {
         'regen_time': '3시간',
         'last_kill_time': None
     },
+    '보드레': {
+    'name': '보드레',
+    'level': 47,
+    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FczdMFw%2FbtsafNEDJqw%2FL4WgURVrhPothZIoGGVzj1%2Fimg.png',
+    'regen_time': '3시간',
+    'last_kill_time': None
+    },
+    '이드라칸': {
+    'name': '이드라칸',
+    'level': 47,
+    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbqYH7o%2FbtsakgL9a0K%2FdQmBOKbxvH59KYSC7oht9k%2Fimg.png',
+    'regen_time': '3시간',
+    'last_kill_time': None
+    },
+    '솔그리드': {
+    'name': '솔그리드',
+    'level': 47,
+    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F13Tqi%2Fbtsaibq6Ip1%2FZtumDQmO9Fpvkiq1wdTtNK%2Fimg.png',
+    'regen_time': '3시간',
+    'last_kill_time': None
+    },
+    '악몽': {
+    'name': '악몽',
+    'level': 47,
+    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FchFtNo%2Fbtsai46hvqC%2FiOrrLs0FiRQPlL6V6oc3B0%2Fimg.png',
+    'regen_time': '3시간',
+    'last_kill_time': None
+    },
     '카를로스': {
     'name': '카를로스',
     'level': 47,
