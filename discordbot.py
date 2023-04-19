@@ -54,15 +54,10 @@ async def on_message(message):
             if boss['last_kill_time'] is None:
                 expected_spawn_time = ''
             else:
-                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f')
+                last_kill_time = datetime.datetime.strptime(boss['last_kill_time'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
                 regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
                 kst = pytz.timezone('Asia/Seoul')
-                now_kst = datetime.datetime.now(kst)
-                expected_spawn_time = last_kill_time + regen_time
-                expected_spawn_time = expected_spawn_time.replace(tzinfo=kst)
-                expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
-                expected_spawn_time = kst.localize(datetime.datetime.strptime(expected_spawn_time, '%Y-%m-%d %H:%M:%S'))
-                expected_spawn_time = expected_spawn_time.astimezone(kst)
+                expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%Y-%m-%d %H:%M:%S')
             
             boss_info = f"{boss['name']} (Lv. {boss['level']})  {expected_spawn_time}"
@@ -86,6 +81,7 @@ async def on_message(message):
         elif parts[1] == '초기화':
             boss['last_kill_time'] = None
             await message.channel.send(f"{boss['name']}의 last kill time이 초기화되었습니다.")
+
 
 
 
