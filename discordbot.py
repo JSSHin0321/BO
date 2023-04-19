@@ -73,10 +73,14 @@ async def on_message(message):
             boss['last_kill_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
         elif parts[1].isdigit() and len(parts[1]) == 4:
+            kst = pytz.timezone('Asia/Seoul')
+            now_kst = datetime.datetime.now(kst)
             hour = int(parts[1][:2])
             minute = int(parts[1][2:])
-            now = datetime.datetime.now()
-            boss['last_kill_time'] = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+            input_time = now_kst.replace(hour=hour, minute=minute, second=0, microsecond=0)
+            utc = pytz.utc
+            last_kill_time = input_time.astimezone(utc)
+            boss['last_kill_time'] = last_kill_time.strftime('%Y-%m-%d %H:%M:%S.%f')
             await message.channel.send(f"{boss['name']}의 last kill time이 갱신되었습니다.")
         elif parts[1] == '초기화':
             boss['last_kill_time'] = None
