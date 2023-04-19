@@ -182,7 +182,8 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            boss_info = "{:<10} (Lv. {:<2}) ==> {:<20}".format(boss['name'], boss['level'], expected_spawn_time)
+
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
