@@ -145,9 +145,10 @@ async def send_boss_alert(boss):
             boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
 
             embed = discord.Embed(title="보스 출현 알림",
-                                  description=f"보스가 10분 후에 출현합니다! ({boss['location']})",
+                                  description=f"보스가 10분 후에 출현합니다!",
                                   color=0x2ECC71)  # You can change the color to your preference
             embed.set_footer(text="출현 예정 시간: " + expected_spawn_time_str)
+            embed.set_image(url=boss['location'])
             channel = client.get_channel(1094324110345130067)  # Replace YOUR_CHANNEL_ID with the actual channel ID
             await channel.send(embed=embed)
 
