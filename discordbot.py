@@ -143,7 +143,7 @@ async def send_boss_alert(boss):
         if 9 <= time_diff < 11:
             expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
             boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
-            channel = client.get_channel(YOUR_CHANNEL_ID)  # Replace YOUR_CHANNEL_ID with the actual channel ID
+            channel = client.get_channel(1094324110345130067)  # Replace YOUR_CHANNEL_ID with the actual channel ID
             await channel.send(f"보스가 10분 후에 {boss_info} ({boss['location']}) 출현합니다!")
 
 
