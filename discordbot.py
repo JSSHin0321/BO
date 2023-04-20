@@ -215,24 +215,8 @@ async def on_message(message):
             boss_info = f"{expected_spawn_time} ==> {boss['name']} (Lv. {boss['level']})"
             boss_info_list.append(boss_info)
 
-        # Embed 객체 생성
-        boss_embed = discord.Embed(title="보스 정보", description="", color=0x00FF00)
-
-        # 표 헤더 설정
-        boss_embed.add_field(name="예상 리젠 시간", value="\u200b", inline=True)
-        boss_embed.add_field(name="보스 이름", value="\u200b", inline=True)
-        boss_embed.add_field(name="보스 레벨", value="\u200b", inline=True)
-
-        # 각 보스 정보 추가
-        for boss_info in boss_info_list:
-            expected_spawn_time, name_level = boss_info.split(" ==> ")
-            name, level = name_level.split(" (Lv. ")
-            level = level.replace(")", "")
-
-            boss_embed.add_field(name=expected_spawn_time, value=name, inline=True)
-            boss_embed.add_field(name="\u200b", value=level, inline=True)
-            boss_embed.add_field(name="\u200b", value="\u200b", inline=True)
-
+        boss_info_str = "\n".join(boss_info_list)
+        boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
 
 
