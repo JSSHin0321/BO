@@ -179,6 +179,10 @@ async def on_message(message):
     parts = message.content.split()
     command = parts[0][len(PREFIX):]
     
+    if command == "보스맵1":
+        await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/716418d7-2576-43c3-9580-3d2bf2d77e58/45%EB%B3%B4%EC%8A%A4.png?data-size=5332128")
+    
+    
     if command == '보스':
         boss_info_list = []
         for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
