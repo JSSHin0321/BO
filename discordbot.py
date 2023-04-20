@@ -180,14 +180,14 @@ async def on_message(message):
     command = parts[0][len(PREFIX):]
 
     if command == '명령어':
-    commands = [
+        await message.channel.send(
         '보스맵1: 보스 맵 1번 이미지 링크를 보여줍니다.',
         '보스맵2: 보스 맵 2번 이미지 링크를 보여줍니다.',
         '보스: 현재 등록된 모든 보스의 스폰 시간 정보를 보여줍니다.',
         '[보스 이름]: 해당 보스의 위치 이미지 링크를 보여줍니다.',
         '[보스 이름] 컷 : 해당 보스의 last kill time을 갱신합니다.',
         '[보스 이름] [4자리 시간]: 해당 보스의 last kill time을 입력한 시간으로 갱신합니다.'
-    ]
+    )
     
     
     if command == "보스맵1":
