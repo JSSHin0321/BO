@@ -140,7 +140,7 @@ async def send_boss_alert(boss):
         expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
         time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
 
-        if 9 <= time_diff < 11:
+        if 9.5 <= time_diff < 10.5:
             expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
             boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
             channel = client.get_channel(1094324110345130067)  # Replace YOUR_CHANNEL_ID with the actual channel ID
