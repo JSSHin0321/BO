@@ -149,7 +149,7 @@ async def send_boss_alert(boss):
                                   color=0x2ECC71)  # You can change the color to your preference
             embed.set_footer(text="출현 예정 시간: " + expected_spawn_time_str)
             embed.set_image(url=boss['location'])
-            channel = client.get_channel(1094324110345130067)  # Replace YOUR_CHANNEL_ID with the actual channel ID
+            channel = client.get_channel(1097888729693167648)  # Replace YOUR_CHANNEL_ID with the actual channel ID
             await channel.send(embed=embed)
 
 
