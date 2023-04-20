@@ -178,6 +178,17 @@ async def on_message(message):
     
     parts = message.content.split()
     command = parts[0][len(PREFIX):]
+
+    if command == '명령어':
+    commands = [
+        '보스맵1: 보스 맵 1번 이미지 링크를 보여줍니다.',
+        '보스맵2: 보스 맵 2번 이미지 링크를 보여줍니다.',
+        '보스: 현재 등록된 모든 보스의 스폰 시간 정보를 보여줍니다.',
+        '[보스 이름]: 해당 보스의 위치 이미지 링크를 보여줍니다.',
+        '[보스 이름] 컷 : 해당 보스의 last kill time을 갱신합니다.',
+        '[보스 이름] [4자리 시간]: 해당 보스의 last kill time을 입력한 시간으로 갱신합니다.'
+    ]
+    
     
     if command == "보스맵1":
         await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/716418d7-2576-43c3-9580-3d2bf2d77e58/45%EB%B3%B4%EC%8A%A4.png?data-size=5332128")
