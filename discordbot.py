@@ -139,10 +139,13 @@ async def send_boss_alert(boss):
         regen_time = datetime.timedelta(hours=int(boss['regen_time'][0]))
         expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
         time_diff = (expected_spawn_time - now_kst).total_seconds() / 60.0
-    if 9 <= time_diff < 11:
-        expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
-        boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
-        await client.get_channel(1094324110345130067).send(f"보스가 10분 후에 {boss_info} ({boss['location']}) 출현합니다!")
+
+        if 9 <= time_diff < 11:
+            expected_spawn_time_str = expected_spawn_time.strftime('%H:%M:%S')
+            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time_str}"
+            channel = client.get_channel(YOUR_CHANNEL_ID)  # Replace YOUR_CHANNEL_ID with the actual channel ID
+            await channel.send(f"보스가 10분 후에 {boss_info} ({boss['location']}) 출현합니다!")
+
 
 
 
