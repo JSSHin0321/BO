@@ -182,6 +182,8 @@ async def on_message(message):
     if command == "보스맵1":
         await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/716418d7-2576-43c3-9580-3d2bf2d77e58/45%EB%B3%B4%EC%8A%A4.png?data-size=5332128")
     
+    if command == "보스맵2":
+        await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083")
     
     if command == '보스':
         boss_info_list = []
