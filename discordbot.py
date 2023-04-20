@@ -1,6 +1,7 @@
 from cmath import log
 from distutils.sysconfig import PREFIX
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import datetime
@@ -123,6 +124,11 @@ boss_list = {
     'last_kill_time': None
     }
 }
+
+@client.command()
+async def 보스맵(ctx, arg):
+    if arg == "1":
+        await ctx.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/716418d7-2576-43c3-9580-3d2bf2d77e58/45%EB%B3%B4%EC%8A%A4.png?data-size=5332128")
 
 
 
