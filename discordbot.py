@@ -197,12 +197,13 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            boss_info = f"{expected_spawn_time} ==> {boss['name']} (Lv. {boss['level']})"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
         boss_embed = discord.Embed(title="보스 정보", description=boss_info_str, color=0x00FF00)
         await message.channel.send(embed=boss_embed)
+
 
 
     elif command in boss_list:
@@ -239,7 +240,7 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = f"{boss['name']} (Lv. {boss['level']}) ==> {expected_spawn_time}"
+            boss_info = f"{expected_spawn_time} ==> {boss['name']} (Lv. {boss['level']})"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
