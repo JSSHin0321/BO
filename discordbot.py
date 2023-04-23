@@ -17,6 +17,41 @@ client = discord.Client()
 
 
 boss_list = {
+    '부요부요': {
+        'name': '부요부요',
+        'level': 50,
+        'location': 'https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702',
+        'regen_time': '3시간',
+        'last_kill_time': None
+    },      
+    '게란타': {
+        'name': '게란타',
+        'level': 50,
+        'location': 'https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702',
+        'regen_time': '3시간',
+        'last_kill_time': None
+    },   
+    '칼비오레': {
+        'name': '칼비오레',
+        'level': 50,
+        'location': 'https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702',
+        'regen_time': '3시간',
+        'last_kill_time': None
+    },   
+    '머라이어': {
+        'name': '머라이어',
+        'level': 50,
+        'location': 'https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702',
+        'regen_time': '3시간',
+        'last_kill_time': None
+    },    
+    '아무르': {
+        'name': '아무르',
+        'level': 50,
+        'location': 'https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702',
+        'regen_time': '3시간',
+        'last_kill_time': None
+    },
     '제니나': {
         'name': '제니나',
         'level': 47,
@@ -45,8 +80,8 @@ boss_list = {
     'regen_time': '3시간',
     'last_kill_time': None
     },
-    '솔그리드': {
-    'name': '솔그리드',
+    '솔그리더': {
+    'name': '솔그리더',
     'level': 47,
     'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F13Tqi%2Fbtsaibq6Ip1%2FZtumDQmO9Fpvkiq1wdTtNK%2Fimg.png',
     'regen_time': '3시간',
@@ -187,6 +222,7 @@ async def on_message(message):
         )
         embed.add_field(name="보스맵1", value="보스 맵 1번 이미지 링크를 보여줍니다.", inline=False)
         embed.add_field(name="보스맵2", value="보스 맵 2번 이미지 링크를 보여줍니다.", inline=False)
+        embed.add_field(name="전체맵", value="보스 전체맵 이미지 링크를 보여줍니다.", inline=False)
         embed.add_field(name="보스", value="현재 등록된 모든 보스의 스폰 시간 정보를 보여줍니다.", inline=False)
         embed.add_field(name="[보스 이름]", value="해당 보스의 위치 이미지 링크를 보여줍니다.", inline=False)
         embed.add_field(name="[보스 이름] 컷", value="해당 보스의 last kill time을 갱신합니다.", inline=False)
@@ -200,6 +236,9 @@ async def on_message(message):
     if command == "보스맵2":
         await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083")
     
+    if command == "전체맵":
+        await message.channel.send("https://dszw1qtcnsa5e.cloudfront.net/community/20230422/3cbc2136-f312-4f84-9a10-5a6d973a6ad2/%ED%95%84%EB%B3%B4v1.0.jpg?data-size=969702")
+
     if command == '보스':
         boss_info_list = []
         for boss in sorted(boss_list.values(), key=lambda x: x['last_kill_time'] or '9999-99-99 99:99:99'):
