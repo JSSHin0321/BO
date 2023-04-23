@@ -128,34 +128,6 @@ boss_list = {
     'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbS6EiX%2FbtsaibxQI5N%2FeL7dfmI4SnKL5hI6rDXurK%2Fimg.png',
     'regen_time': '3시간',
     'last_kill_time': None
-    },
-    '이올라': {
-    'name': '이롤라',
-    'level': 41,
-    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F6SxbD%2FbtsamWsRSwt%2FOR1orqutBTBWfZ1U0ZLCKK%2Fimg.png',
-    'regen_time': '3시간',
-    'last_kill_time': None
-    },
-    '라크다르': {
-    'name': '라크다르',
-    'level': 41,
-    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FczdMFw%2FbtsafNEDJqw%2FL4WgURVrhPothZIoGGVzj1%2Fimg.png',
-    'regen_time': '3시간',
-    'last_kill_time': None
-    },
-    '호쏜': {
-    'name': '호쏜',
-    'level': 41,
-    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FtHoMB%2FbtsamWsRSLj%2FHGeT2v5JnEIdmWm2QIbKh0%2Fimg.png',
-    'regen_time': '3시간',
-    'last_kill_time': None
-    },
-    '기드온': {
-    'name': '기드온',
-    'level': 41,
-    'location': 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdK4pXz%2Fbtsai4ZwHpf%2F5Ft7pk4fGwk0IGfzrYxj81%2Fimg.png',
-    'regen_time': '3시간',
-    'last_kill_time': None
     }
 }
 
@@ -251,7 +223,7 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = f"{expected_spawn_time} ==> {boss['name']} (Lv. {boss['level']})"
+            boss_info = f"{expected_spawn_time} : {boss['name']} (Lv. {boss['level']})"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
@@ -295,7 +267,7 @@ async def on_message(message):
                 expected_spawn_time = (last_kill_time + regen_time).astimezone(kst)
                 expected_spawn_time = expected_spawn_time.strftime('%H:%M:%S')
 
-            boss_info = f"{expected_spawn_time} ==> {boss['name']} (Lv. {boss['level']})"
+            boss_info = f"{expected_spawn_time} : {boss['name']} (Lv. {boss['level']})"
             boss_info_list.append(boss_info)
 
         boss_info_str = "\n".join(boss_info_list)
